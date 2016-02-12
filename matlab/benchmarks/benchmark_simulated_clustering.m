@@ -15,7 +15,7 @@ for i=1:50
     params.Lc = 28;
     params.LcSD = 3;
     params.numPeaks = randi([7 12],1,1);
-    params.rmsNoise = 10;
+    params.rmsNoise = 5;
     params.nonSpecificForce = 50;
     params.nonSpecificForceSD = 10;
     params.nonSpecificForces = 0;
@@ -32,7 +32,8 @@ for i=1:50
     r{i}.realL = rlocs;
     r{i}.realF = rpeaks;
     
-    [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,0);
+    [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,1);
+    pause(0.1);
     r{i}.xPeaks = locs;
     r{i}.F = pks;
     r{i}.L=[];
@@ -43,8 +44,6 @@ for i=1:50
         L0 = getLc(params.Persistence,x,F);
         r{i}.L = [r{i}.L; L0];
     end
-    pause(0.1)
-    plot(r{i}.x,r{i}.y,rlocs,rpeaks,'x',locs,pks,'o')
 end
 originalR = r;
 
@@ -169,9 +168,9 @@ originalR = r;
 
 
 %% Use a real data
-filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\AllYeastPGK\YeastPGK');
 filelist1 = getAllFiles('../testdata/');
 filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\3I27_Luciferase_4I27')
+filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\AllYeastPGK\YeastPGK');
 i = 0;
 clear filelist
 clear r
@@ -189,7 +188,7 @@ for num=1:length(filelist1)
             r{i}.name = char(filelist1{num});
 
             [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,1);
-            pause(1)
+            pause(0.1)
             r{i}.xPeaks = locs;
             r{i}.F = [];
             r{i}.L=[];
@@ -209,8 +208,7 @@ for num=1:length(filelist1)
             if length(r{i}.L) < 2
                 i = i - 1;
             else 
-                pause(0.1)
-                plot(r{i}.x,r{i}.y,locs,pks,'o')            
+                disp(sprintf('skipping %d',i))  
             end
         catch
             i = i - 1;
@@ -227,17 +225,17 @@ r = originalR;
 
 % Align 
 subplot(2,1,1)
-numClusters = 6
+numClusters = 5
 Z = linkage(distMatrix,'ward','euclidean');
 ylabel('Group Number')
 cidx = cluster(Z,'MaxClust',numClusters);
 group = cidx;
 subplot(2,1,1)
-[r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,1:max(cidx),200,group);
+[r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,1:max(cidx),20,group);
 
 % Calculate Kernel density
 for k=1:max(cidx)
-    Ldist = []
+    Ldist = [];
     for i=1:length(r)
         for j=1:length(r{i}.L)
             if cidx(i)==k
@@ -246,12 +244,15 @@ for k=1:max(cidx)
             end
         end
     end
-    [f,xi]=ksdensity(Ldist,[sort(unique(Ldist))]);
-    thresholdDensity = mean(f(find(xi>mean(Ldist)+2*std(Ldist))));
+    [f,xi]=ksdensity(Ldist,[sort(unique(Ldist))],'bandwidth',5);
+    thresholdDensity = mean(f)-std(f);
+    if sum(cidx==k) < 20
+        thresholdDensity = -1;
+    end
     subplot(2,1,2)
     plot(xi,f)
+    axis([0 700 0 20e-3])
     hist(Ldist,0:5:500)
-    axis([0 470 0 6e-3])
     for i=1:length(r)
         if cidx(i)==k
             newRL = [];
@@ -298,7 +299,7 @@ Z = linkage(distMatrix,'ward','euclidean');
 close all; figure;
 subplot(1,2,2)
 lastCriterion = 10000;
-for numClusters=2:1:15
+for numClusters=2:1:6
     [H,T,perm]=dendrogram(Z,numClusters,'Orientation','right');
     ylabel('Group Number')
     cidx = cluster(Z,'MaxClust',numClusters);
@@ -320,7 +321,8 @@ numClusters = numClusters -1
 
 
 %% Actually plot clusters
-numClusters = 10
+figure(10)
+numClusters = 6
 Z = linkage(distMatrix,'ward','euclidean');
 close all; figure;
 subplot(1,2,2)
@@ -330,18 +332,45 @@ cidx = cluster(Z,'MaxClust',numClusters);
 cidx = T;
 group = cidx;
 subplot(1,2,1)
-[r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,200,group);
+[r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,100,group);
 disp(numClusters)
 newCriterion = log(mean(meanDifferenceSDmean)) + log(numClusters);
 ylabel('Record Number')
 xlabel('Contour length')
 
+% Show densities
+figure(12)
+maxNum = 0
+for k=1:max(cidx)
+    if sum(cidx==k) > 10
+        maxNum = maxNum + 1
+    end
+end
+num = 0
+for k=1:max(cidx)
+    Ldist = [];
+    for i=1:length(r)
+        for j=1:length(r{i}.L)
+            if cidx(i)==k
+                Ldistcalc = (r{i}.L(j) + r{i}.Ladj)-minR+10;
+                Ldist = [Ldist; Ldistcalc];
+            end
+        end
+    end
+    [f,xi]=ksdensity(Ldist,0:1:max(Ldist),'bandwidth',4);
+    if sum(cidx==k) > 10
+        num = num + 1;
+        subplot(maxNum,1,num)
+        plot(xi,f)
+        axis([0 max(Ldist) 0 max(f)*1.2])
+    end
+end
 
 
 
 
 % Plot one
-ci=2;
+ci=3;
 cind = find(cidx==ci);
 cm=colormap(jet(length(cind)+1));
 num = 0

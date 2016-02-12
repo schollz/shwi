@@ -1,4 +1,4 @@
-function [data,Foriginal,rlocs,rpks] = generateCurve(params)
+function [data,Foriginal,rlocs,rpks] = generateCurve(params,toPlot)
 % GENERATE A CURVE
 % [data,Foriginal,rlocs,rpeaks] = generateCurve(params)
 % data = [x,y] of generatedCurve
@@ -18,7 +18,9 @@ function [data,Foriginal,rlocs,rpks] = generateCurve(params)
 % params.diffusion = 0.0006;
 % data = generateCurve(params);
 
-
+if nargin < 2
+    toPlot = 0;
+end
 % Force level and SD
 Fu = params.Force;
 Fu_sd = params.ForceSD;
@@ -150,5 +152,9 @@ for i=1:length(locs)
     locs(i) = xbaseline(locs(i));
 end
 rlocs = locs;
+
+if toPlot > 0 
+    plot(data(:,1),data(:,2),data(:,1),Foriginal,locs,pks,'o')
+end
 
 end
