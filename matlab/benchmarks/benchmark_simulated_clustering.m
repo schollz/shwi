@@ -209,7 +209,6 @@ for num=1:length(filelist1)
             end
             if length(r{i}.L) < 2
                 i = i - 1;
-            else 
                 disp(sprintf('skipping %d',i))  
             end
         catch
