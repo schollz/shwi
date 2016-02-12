@@ -49,9 +49,129 @@ end
 originalR = r;
 
 
+%% Use a simulated "real" data set
+for i=1:5
+    % Full Luciferase with Nonspecific
+    params.Force = [20 30 40 200 200 200 200 200];
+    params.ForceSD = 7.5;
+    params.Lc = [30 80 130 190 220 250 280 310];
+    params.LcSD = 1;
+    params.Persistence = 0.4;
+    params.rmsNoise = 10;
+    params.nonSpecificForce = 50;
+    params.nonSpecificForceSD = 10;
+    params.nonSpecificForces = 1;
+    params.curveLength = 450;
+    params.diffusion = 0.0006;
+    [data, Foriginal,rlocs,rpeaks] = generateSpecial(params);
+    
+    [origin] = getOrigin(data(:,1),data(:,2),0);
+    r{i}.x = data(:,1)-origin(:,1);
+    r{i}.y = data(:,2)-origin(:,2);
+    clear data
+    r{i}.file = sprintf('%d',i);
+    r{i}.name = sprintf('simulated');
+    r{i}.realL = rlocs;
+    r{i}.realF = rpeaks;
+    
+    [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,0);
+    r{i}.xPeaks = locs;
+    r{i}.F = pks;
+    r{i}.L=[];
+    peaks = [];
+    for k=1:length(r{i}.xPeaks)
+        x=r{i}.xPeaks(k);
+        F=r{i}.F(k);
+        L0 = getLc(params.Persistence,x,F);
+        r{i}.L = [r{i}.L; L0];
+    end
+    pause(0.1)
+    plot(r{i}.x,r{i}.y,rlocs,rpeaks,'x',locs,pks,'o')
+end
+for i=6:20
+    % Full Luciferase without Nonspecific
+    params.Force = [20 30 40 200 200 200 200 200];
+    params.ForceSD = 7.5;
+    params.Lc = [30 80 130 190 220 250 280 310];
+    params.LcSD = 1;
+    params.Persistence = 0.4;
+    params.rmsNoise = 10;
+    params.nonSpecificForce = 50;
+    params.nonSpecificForceSD = 10;
+    params.nonSpecificForces = 0;
+    params.curveLength = 450;
+    params.diffusion = 0.0006;
+    [data, Foriginal,rlocs,rpeaks] = generateSpecial(params);
+    
+    [origin] = getOrigin(data(:,1),data(:,2),0);
+    r{i}.x = data(:,1)-origin(:,1);
+    r{i}.y = data(:,2)-origin(:,2);
+    clear data
+    r{i}.file = sprintf('%d',i);
+    r{i}.name = sprintf('simulated');
+    r{i}.realL = rlocs;
+    r{i}.realF = rpeaks;
+    
+    [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,0);
+    r{i}.xPeaks = locs;
+    r{i}.F = pks;
+    r{i}.L=[];
+    peaks = [];
+    for k=1:length(r{i}.xPeaks)
+        x=r{i}.xPeaks(k);
+        F=r{i}.F(k);
+        L0 = getLc(params.Persistence,x,F);
+        r{i}.L = [r{i}.L; L0];
+    end
+    pause(0.1)
+    plot(r{i}.x,r{i}.y,rlocs,rpeaks,'x',locs,pks,'o')
+end
+for i=21:30
+    % Only last two peaks of Lucferase, without Nonspecific
+    params.Force = [30 40 200 200 200 200 200];
+    params.ForceSD = 5;
+    params.Lc = [80 130 190 220 250 280 310];
+    params.LcSD = 1;
+    params.Persistence = 0.4;
+    params.rmsNoise = 10;
+    params.nonSpecificForce = 50;
+    params.nonSpecificForceSD = 10;
+    params.nonSpecificForces = 0;
+    params.curveLength = 450;
+    params.diffusion = 0.0006;
+    [data, Foriginal,rlocs,rpeaks] = generateSpecial(params);
+    
+    [origin] = getOrigin(data(:,1),data(:,2),0);
+    r{i}.x = data(:,1)-origin(:,1);
+    r{i}.y = data(:,2)-origin(:,2);
+    clear data
+    r{i}.file = sprintf('%d',i);
+    r{i}.name = sprintf('simulated');
+    r{i}.realL = rlocs;
+    r{i}.realF = rpeaks;
+    
+    [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,0);
+    r{i}.xPeaks = locs;
+    r{i}.F = pks;
+    r{i}.L=[];
+    peaks = [];
+    for k=1:length(r{i}.xPeaks)
+        x=r{i}.xPeaks(k);
+        F=r{i}.F(k);
+        L0 = getLc(params.Persistence,x,F);
+        r{i}.L = [r{i}.L; L0];
+    end
+    pause(0.1)
+    plot(r{i}.x,r{i}.y,rlocs,rpeaks,'x',locs,pks,'o')
+end
+originalR = r;
+
+
+
 %% Use a real data
 filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\AllYeastPGK\YeastPGK');
 filelist1 = getAllFiles('../testdata/');
+filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\3I27_Luciferase_4I27')
 i = 0;
 clear filelist
 clear r
@@ -59,6 +179,7 @@ for num=1:length(filelist1)
     if ~isempty(findstr(filelist1{num},'.afm'))==1
         i = i + 1;
         try
+            disp(num)
             data = importdata(char(filelist1{num}));
             [origin] = getOrigin(data(:,1),data(:,2),0);
             r{i}.x = data(:,1)-origin(:,1);
@@ -105,7 +226,7 @@ r = originalR;
 
 % Align 
 subplot(2,1,1)
-numClusters = 2
+numClusters = 6
 Z = linkage(distMatrix,'ward','euclidean');
 ylabel('Group Number')
 cidx = cluster(Z,'MaxClust',numClusters);
@@ -198,7 +319,7 @@ numClusters = numClusters -1
 
 
 %% Actually plot clusters
-numClusters = 7
+numClusters = 20
 Z = linkage(distMatrix,'ward','euclidean');
 close all; figure;
 subplot(1,2,2)
@@ -219,7 +340,7 @@ xlabel('Contour length')
 
 
 % Plot one
-ci=6;
+ci=14;
 cind = find(cidx==ci);
 cm=colormap(jet(length(cind)+1));
 num = 0
