@@ -9,7 +9,11 @@ for ai=1:length(a)
     for bi=1:length(bOriginal)
         bMod =  (bOriginal(bi)-a(ai));
         b = bOriginal - bMod;
-        aMatched = getMatches2(a,b,10);
+        try
+            aMatched = getMatches2(a,b,10);
+        catch
+            aMatched = getMatches2(a',b',10);            
+        end
         if sum(aMatched>0)==0
             continue
         end
@@ -26,6 +30,4 @@ posibilities = sortrows(posibilities);
 shiftAmount = posibilities(end,3);
 
 end
-
-
 

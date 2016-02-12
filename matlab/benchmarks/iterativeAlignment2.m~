@@ -1,3 +1,119 @@
+function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,iterations,group)
+    %% Perform iterative alignment
+
+    % Initialize Ladj for each
+    for i=1:length(r)
+        r{i}.Ladj = 0;
+    end
+
+    % Iterative alignment
+    textprogressbar('iterative alignment: ');
+    numIterations = iterations;
+    for numRuns = 1:numIterations
+        textprogressbar((numRuns/numIterations*100))
+        for ci=1:max(cidx)
+            cind = find(cidx==ci);
+            meanDifferenceSD{ci} = [];
+            for jj=1:length(cind)
+                i = cind(jj);
+                meanDifferences = zeros(length(cind),1);
+                for jj2=1:length(cind)
+                    if (jj==jj2)
+
+                    else
+                        i2 = cind(jj2);
+                        if sum(r{i}.L) == sum(r{i2}.L)
+                            meanDifferences(jj2) = 0;
+                        else
+                            meanDifferences(jj2)=-1*getDifference(r{i}.L+r{i}.Ladj,r{i2}.L+r{i2}.Ladj,r{i}.matches{i2});
+                        end
+                    end
+                end
+                meanDifference = mean(meanDifferences(meanDifferences>0));
+                meanDifferenceSD{ci} = [meanDifferenceSD{ci}; std(meanDifferences)];
+                if isnan(meanDifference)==0
+                    r{i}.Ladj = r{i}.Ladj + meanDifference;
+                end
+
+            end
+        end
+    end
+    textprogressbar('done');
+    
+    meanDifferenceSDmean = zeros(max(cidx),1);
+    for i=1:length(meanDifferenceSD)
+        if sum(meanDifferenceSD{i})==0 || length(meanDifferenceSD{i})<0.1*length(cidx)
+            meanDifferenceSDmean(i)=0;
+        else
+            meanDifferenceSDmean(i) = mean(meanDifferenceSD{i});
+        end
+    end
+    for i=1:length(meanDifferenceSDmean)
+        if meanDifferenceSDmean(i)==0
+            meanDifferenceSDmean(i) = max(meanDifferenceSDmean);
+        end
+    end
+
+    % Align to last peak for each
+    meanAll = zeros(max(cidx),1);
+    for ci=1:max(cidx)
+        cind = find(cidx==ci);
+        for jj=1:length(cind)
+            i = cind(jj);
+            meanAll(ci) = meanAll(ci) + (r{i}.L(end)+r{i}.Ladj(end))/length(cind);      
+        end
+    end
+
+    minR = 1000;
+    maxR = -1000;
+    for ci=1:max(cidx)
+        cind = find(cidx==ci);
+        for jj=1:length(cind)
+            i = cind(jj);
+            r{i}.Ladj = r{i}.Ladj - meanAll(ci);
+            if max((r{i}.L + r{i}.Ladj)) > maxR
+                maxR = max((r{i}.L + r{i}.Ladj));
+            end
+            if min((r{i}.L + r{i}.Ladj)) < minR
+                minR = min((r{i}.L + r{i}.Ladj));
+            end      
+        end
+    end
+
+
+
+    allBlocks = zeros(length(r)+length(cind)+1,round(maxR)-round(minR)+10);
+    allBlocks = zeros(length(r),300);
+    row = 1;
+    for ci2=1:max(cidx)
+        ci = perm(ci2);
+        cind = find(cidx==ci);
+        for jj=1:length(cind)
+            i = cind(jj);
+            for j=1:length(r{i}.L)
+                val = round((r{i}.L(j) + r{i}.Ladj))-round(minR)+10;
+%                 allBlocks(row,val) = ci;
+%                 allBlocks(row,val+1) = ci;
+%                 allBlocks(row,val-1) = ci;  
+                allBlocks(row,val) = group(i);
+                allBlocks(row,val+1) = group(i);
+                allBlocks(row,val-1) = group(i);  
+            end
+            row = row + 1;
+        end
+        allBlocks(row,:) = -99;
+        row = row + 1;
+    end
+    colormap jet
+    allBlocks(allBlocks==0) = 1+max(max(allBlocks));
+    allBlocks(allBlocks==-99) = 1+max(max(allBlocks));
+    imagesc(flipud(allBlocks))
+    newMinR = -1 * (-round(minR)+10);
+end
+
+
+
+
 close all;
 clear a;
 a{1}.L=[10 30 90]+30;
@@ -10,13 +126,13 @@ a{4}.L=[10 30 90]-10;
 a{4}.adj = 0;
 a{5}.L=[10 30 90]+10;
 a{5}.adj = 0;
-a{6}.L=[10 30 90]+32;
+a{6}.L=[10 30 90 ]+32;
 a{6}.adj = 0;
 a{7}.L=[10 30 90 120 150 180 210]+rand(1,1)*10;
 a{7}.adj = 0;
 a{8}.L=[10 30 90 120 150 180 210]+rand(1,1)*10;
 a{8}.adj = 0;
-a{9}.L=[10 30 90 120 150 210]+rand(1,1)*20;
+a{9}.L=[10 30 90 120 150 210]-rand(1,1)*20;
 a{9}.adj = 0;
 drawPieces(a)
 
@@ -24,36 +140,36 @@ lastMovementMean = 0;
 lastMovement = [0 0 0];
 for kkk=1:1000
     movement = 0;
-    iArray = 1:length(a);%randperm(length(a));
-    jArray = 1:length(a);%randperm(length(a));
-    for ii=1:length(a)
+    iArray = randperm(length(r));
+    jArray = randperm(length(r));
+    for ii=1:length(r)
         i=iArray(ii);
         newAdj = [];
-        for jj=1:length(a)
+        for jj=1:length(r)
             j=jArray(jj);
             if j~=i
-                [shiftAmount] = getAlignmentDifference(a{j}.L-a{j}.adj,a{i}.L-a{i}.adj);
+                [shiftAmount] = getAlignmentDifference(r{j}.L-r{j}.Ladj,a{i}.L-r{i}.Ladj);
                 newAdj = [newAdj; shiftAmount];  
             end
         end
         if mean(newAdj) > 0
-            a{i}.adj = a{i}.adj + 1;
+            r{i}.Ladj = r{i}.Ladj + 1;
             movement = movement + mean(newAdj);
         elseif mean(newAdj) < 0
-            a{i}.adj = a{i}.adj - 1;
+            r{i}.Ladj = r{i}.Ladj - 1;
             movement = movement - mean(newAdj);
         end
     end
     drawPieces(a)
     pause(0.1)
-    disp(movement)
-    if movement == lastMovement
-        break
-    end
     lastMovement = [movement lastMovement];
     lastMovement = lastMovement(1:3);
-    if mean(lastMovement) == lastMovementMean(
-%     if abs(movement) == length(a) || movement == 0
+    if abs(mean(lastMovement) - lastMovementMean) < 1
+        break
+    end
+    lastMovementMean = mean(lastMovement);
+    disp(lastMovementMean)
+%     if abs(movement) == length(r) || movement == 0
 %         break
 %     end
 end

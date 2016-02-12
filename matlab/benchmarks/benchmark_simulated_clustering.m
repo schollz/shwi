@@ -335,7 +335,7 @@ cidx = cluster(Z,'MaxClust',numClusters);
 cidx = T;
 group = cidx;
 subplot(1,2,1)
-[r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,100,group);
+[r,minR,meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,100,group);
 disp(numClusters)
 newCriterion = log(mean(meanDifferenceSDmean)) + log(numClusters);
 ylabel('Record Number')
