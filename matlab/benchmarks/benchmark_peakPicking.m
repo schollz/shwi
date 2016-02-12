@@ -12,7 +12,8 @@ total1 = 0;
 tps1 = 0;
 fps1 = 0;
 fns1 = 0;  
-    for theIterations=1:10
+
+for theIterations=1:10
     theForce = theForces(theForceI);
 
     params.Force = theForce;
@@ -29,45 +30,46 @@ fns1 = 0;
     params.diffusion = 0.0006;
     [data,Foriginal,rlocs,rpks] = generateCurve(params);
 
-[pks_g,locs_g] = getPeaksSEGM(data(:,1),data(:,2),1);
-klocs = locs_g;
-kpks = pks_g;
+    [pks_g,locs_g] = getPeaksSEGM(data(:,1),data(:,2),1);
+    klocs = locs_g;
+    kpks = pks_g;
 
-realPeaks = rlocs;
-guessPeaks = locs_g';
-[vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,5);
-truePositives = sum(vecDoneOriginal>0);
-falseNegatives = sum(vecDoneOriginal==0);
-[vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,5);
-falsePositives = sum(vecDoneOriginal==0);
-total1 = total1 + length(realPeaks);
-tps1 = tps1 + truePositives;
-fps1 = fps1 + falsePositives;
-fns1 = fns1 + falseNegatives;
-
-
+    realPeaks = rlocs;
+    guessPeaks = locs_g';
+    [vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,5);
+    truePositives = sum(vecDoneOriginal>0);
+    falseNegatives = sum(vecDoneOriginal==0);
+    [vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,5);
+    falsePositives = sum(vecDoneOriginal==0);
+    total1 = total1 + length(realPeaks);
+    tps1 = tps1 + truePositives;
+    fps1 = fps1 + falsePositives;
+    fns1 = fns1 + falseNegatives;
 
 
-minPeakDistance = 12;
-minPeakHeight = 11;
-bestLength = 5;
-[peaks] = getPeaksWFFT(data(:,1),data(:,2),minPeakDistance,minPeakHeight,bestLength);
-wpks = peaks(:,2);
-wlocs = peaks(:,1);
-locs_g = peaks(:,1);
-realPeaks = rlocs;
-guessPeaks = locs_g';
-[vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,5);
-truePositives = sum(vecDoneOriginal>0);
-falseNegatives = sum(vecDoneOriginal==0);
-[vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,5);
-total2 = total2 + length(realPeaks);
-tps2 = tps2 + truePositives;
-fps2 = fps2 + falsePositives;
-fns2 = fns2 + falseNegatives;
 
+    minPeakDistance = 12;
+    minPeakHeight = 11;
+    bestLength = 5;
+    [peaks] = getPeaksWFFT(data(:,1),data(:,2),minPeakDistance,minPeakHeight,bestLength);
+    wpks = peaks(:,2);
+    wlocs = peaks(:,1);
+    locs_g = peaks(:,1);
+    realPeaks = rlocs;
+    guessPeaks = locs_g';
+    [vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,5);
+    truePositives = sum(vecDoneOriginal>0);
+    falseNegatives = sum(vecDoneOriginal==0);
+    [vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,5);
+    falsePositives = sum(vecDoneOriginal==0);
+    total2 = total2 + length(realPeaks);
+    tps2 = tps2 + truePositives;
+    fps2 = fps2 + falsePositives;
+    fns2 = fns2 + falseNegatives;
 
 end
+
+
 disp(sprintf('PARAMETERS'))
 % disp(sprintf('Persistence:\t%2.1f nm \nUnfold Force:\t%2.0f pN\nDelta Lc: \t%2.0f nm\nRMS Noise: \t%2.0f pN',P,Fu,Lcbaseline,rmsNoise))
 disp(sprintf('\tTPR\tFPR'))
@@ -75,6 +77,7 @@ disp(sprintf('WFFT\t%2.0f\t%2.0f',100*tps2/total2,100*fps2/total2))
 disp(sprintf('SEGM\t%2.0f\t%2.0f',100*tps1/total1,100*fps1/total1))
 
 forceLevel = [forceLevel; theForce 100*tps2/total2 100*tps1/total1  100*fps2/total2 100*fps1/total1];
+
 end
 
 
