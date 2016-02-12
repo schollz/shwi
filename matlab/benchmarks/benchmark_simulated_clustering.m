@@ -1,51 +1,52 @@
 addpath('../util');
 addpath('../force-curve-util/');
 addpath('../clustering/');
+addpath('../peaks/');
 close all;
 clear all;
 warning('off','all')
 warning
 params.Persistence = 0.4;
-% 
-% %% Use a simulated data set
-% for i=1:50
-%     params.Force = 100;
-%     params.ForceSD = 1;
-%     params.Lc = 28;
-%     params.LcSD = 3;
-%     params.numPeaks = randi([7 12],1,1);
-%     params.rmsNoise = 10;
-%     params.nonSpecificForce = 50;
-%     params.nonSpecificForceSD = 10;
-%     params.nonSpecificForces = 0;
-%     params.curveLength = 450;
-%     params.diffusion = 0.0003;
-%     [data, Foriginal,rlocs,rpeaks] = generateCurve(params);
-%     
-%     [origin] = getOrigin(data(:,1),data(:,2),0);
-%     r{i}.x = data(:,1)-origin(:,1);
-%     r{i}.y = data(:,2)-origin(:,2);
-%     clear data
-%     r{i}.file = sprintf('%d',i);
-%     r{i}.name = sprintf('simulated');
-%     r{i}.realL = rlocs;
-%     r{i}.realF = rpeaks;
-%     
-%     [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,0);
-%     r{i}.xPeaks = locs;
-%     r{i}.F = pks;
-%     r{i}.L=[];
-%     peaks = [];
-%     for k=1:length(r{i}.xPeaks)
-%         x=r{i}.xPeaks(k);
-%         F=r{i}.F(k);
-%         L0 = getLc(params.Persistence,x,F);
-%         r{i}.L = [r{i}.L; L0];
-%     end
-%     pause(0.1)
-%     plot(r{i}.x,r{i}.y,rlocs,rpeaks,'x',locs,pks,'o')
-% end
-% originalR = r;
+
+%% Use a simulated data set
+for i=1:50
+    params.Force = 100;
+    params.ForceSD = 1;
+    params.Lc = 28;
+    params.LcSD = 3;
+    params.numPeaks = randi([7 12],1,1);
+    params.rmsNoise = 10;
+    params.nonSpecificForce = 50;
+    params.nonSpecificForceSD = 10;
+    params.nonSpecificForces = 0;
+    params.curveLength = 450;
+    params.diffusion = 0.0003;
+    [data, Foriginal,rlocs,rpeaks] = generateCurve(params);
+    
+    [origin] = getOrigin(data(:,1),data(:,2),0);
+    r{i}.x = data(:,1)-origin(:,1);
+    r{i}.y = data(:,2)-origin(:,2);
+    clear data
+    r{i}.file = sprintf('%d',i);
+    r{i}.name = sprintf('simulated');
+    r{i}.realL = rlocs;
+    r{i}.realF = rpeaks;
+    
+    [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,0);
+    r{i}.xPeaks = locs;
+    r{i}.F = pks;
+    r{i}.L=[];
+    peaks = [];
+    for k=1:length(r{i}.xPeaks)
+        x=r{i}.xPeaks(k);
+        F=r{i}.F(k);
+        L0 = getLc(params.Persistence,x,F);
+        r{i}.L = [r{i}.L; L0];
+    end
+    pause(0.1)
+    plot(r{i}.x,r{i}.y,rlocs,rpeaks,'x',locs,pks,'o')
+end
+originalR = r;
 
 
 %% Use a real data
@@ -83,10 +84,11 @@ for num=1:length(filelist1)
                 catch
                 end
             end
-            pause(0.1)
-            plot(r{i}.x,r{i}.y,locs,pks,'o')
             if length(r{i}.L) < 2
                 i = i - 1;
+            else 
+                pause(0.1)
+                plot(r{i}.x,r{i}.y,locs,pks,'o')            
             end
         catch
             i = i - 1;
@@ -109,7 +111,7 @@ ylabel('Group Number')
 cidx = cluster(Z,'MaxClust',numClusters);
 group = cidx;
 subplot(2,1,1)
-[r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,200,group);
+[r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,1:max(cidx),200,group);
 
 % Calculate Kernel density
 for k=1:max(cidx)
@@ -126,6 +128,7 @@ for k=1:max(cidx)
     thresholdDensity = mean(f(find(xi>mean(Ldist)+2*std(Ldist))));
     subplot(2,1,2)
     plot(xi,f)
+    hist(Ldist,0:5:500)
     axis([0 470 0 6e-3])
     for i=1:length(r)
         if cidx(i)==k
@@ -149,9 +152,16 @@ for k=1:max(cidx)
     end
 end
 
-for i=1:length(r)
-    if length(r{i}.L)==0
-        disp(i)
+% Remove any that were fully pruned
+rOld = r;
+clear r
+new = 0;
+for i=1:length(rOld)
+    if length(rOld{i}.L)~=0
+        new = new + 1;
+        r{new} = rOld{i};
+    else
+        disp(sprintf('removed %d',i))
     end
 end
 
