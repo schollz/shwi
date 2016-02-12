@@ -1,0 +1,20 @@
+function drawPieces(a)
+    % Draw
+    maxVal = 0;
+    for i=1:length(a)
+        for j=1:length(a{i}.L)
+            if a{i}.L(j)-a{i}.adj > maxVal
+                maxVal = a{i}.L(j);
+                minVal 
+            end
+        end
+    end
+    imageView = zeros(length(a),maxVal);
+    for i=1:length(a)
+        for j=1:length(a{i}.L)
+            imageView(i,round(a{i}.L(j)-a{i}.adj))=1;
+        end
+    end
+    imagesc(imageView)
+
+end
