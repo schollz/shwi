@@ -1,30 +1,36 @@
-function [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
+function [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,filteringLevel,toPlot)
 % Gets peaks using the SEGM method
 % [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
-
     if nargin < 3
+       filteringLevel = 3;
+    end
+    if nargin < 4
        toPlot = 0;
     end
+%     
+% xbaseline = r{i}.x;
+% Fbaseline= r{i}.y;
+% toPlot = 1;
+
+
+
     xbaseline = xbaseline(find(Fbaseline>-50));
     Fbaseline = Fbaseline(find(Fbaseline>-50));
 
 
     y=Fbaseline;
     u = ones(size(y));
-    bestSegm = 0;
-    bestNum = 100000;
-    for R2 = 5:3:20
-    segm = segment([y,u],[0 1 1],R2);
-    if sum(isnan(segm))<bestNum
-        bestNum = sum(isnan(segm));
-        bestSegm = segm;
+    for R2 = 5:5:15
+        segm = segment([y,u],[0 1 1],R2);
+        disp(R2)
+        segmNotNan = segm(~isnan(segm));
+        disp(var(segmNotNan(end-100:end)))
+        if sum(isnan(segm)) < 500 % How much filtering to do?
+            break
+        end
     end
-    if sum(isnan(segm)) < 500
-        break
-    end
-    end
-    segm = bestSegm;
-
+%     plot(segm)
+    
     currentNum = segm(1);
     currentXs = [];
     newX = [];
@@ -47,17 +53,36 @@ function [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
     newX = dats(:,1);
     newY = dats(:,2);
 
-    [pks,locs] = findpeaks(newY,newX,'MinPeakProminence',6,'MinPeakDistance',10,'MinPeakHeight',12);
+    % Prune peaks that are not close to any point
+    [pks,locs] = findpeaks(newY,newX,'MinPeakProminence',20,'MinPeakDistance',15,'MinPeakHeight',50);
+    newPks = [];
+    newLocs = [];
+    for i=1:length(pks)
+%         disp(sprintf('(%2.0f,%2.0f)',locs(i),pks(i)))
+        closestDistance = 1000;
+        for j=1:length(xbaseline)
+            theDist = pdist([[xbaseline(j),Fbaseline(j)];[locs(i),pks(i)]],'euclidean');
+            if theDist < closestDistance
+                closestDistance = theDist;
+            end
+        end
+        if closestDistance < 50
+            newPks = [newPks; pks(i)];
+            newLocs = [newLocs; locs(i)];
+        end
+    end
+    pks = newPks;
+    locs = newLocs;
     
-    pks = pks(find(locs>2));
-    locs = locs(find(locs>2));
+    % Prune peaks that are close to the start
+    pks = pks(find(locs>5));
+    locs = locs(find(locs>5));
     
     if toPlot > 0
         subplot(2,1,1)
         plot(xbaseline,Fbaseline,locs,pks,'or')
         subplot(2,1,2)
         plot(locs,pks,'or',newX,newY,'m-')
-        axis([-100 500 -150 250])
     end
 
 
