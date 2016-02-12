@@ -47,16 +47,17 @@ function [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
     newX = dats(:,1);
     newY = dats(:,2);
 
-    [pks,locs] = findpeaks(newY,newX,'MinPeakProminence',10,'MinPeakDistance',10,'MinPeakHeight',16);
+    [pks,locs] = findpeaks(newY,newX,'MinPeakProminence',6,'MinPeakDistance',10,'MinPeakHeight',12);
     
- 
+    pks = pks(find(locs>10));
+    locs = locs(find(locs>10));
+    
     if toPlot > 0
-    subplot(2,1,1)
-    plot(xbaseline,Fbaseline,xbaseline,segm,'.',locs,pks,'or',newX,newY,'m*-')
-    subplot(2,1,2)
-    plot(locs,pks,'or',newX,newY,'m-')
-    
-     axis([-100 500 -150 250])
+        subplot(2,1,1)
+        plot(xbaseline,Fbaseline,locs,pks,'or')
+        subplot(2,1,2)
+        plot(locs,pks,'or',newX,newY,'m-')
+        axis([-100 500 -150 250])
     end
 
 

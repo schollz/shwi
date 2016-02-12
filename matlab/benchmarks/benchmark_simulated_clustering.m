@@ -188,7 +188,8 @@ for num=1:length(filelist1)
             r{i}.file = sprintf('%d',i);
             r{i}.name = char(filelist1{num});
 
-            [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,0);
+            [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,1);
+            pause(1)
             r{i}.xPeaks = locs;
             r{i}.F = [];
             r{i}.L=[];
@@ -319,7 +320,7 @@ numClusters = numClusters -1
 
 
 %% Actually plot clusters
-numClusters = 20
+numClusters = 10
 Z = linkage(distMatrix,'ward','euclidean');
 close all; figure;
 subplot(1,2,2)
@@ -340,7 +341,7 @@ xlabel('Contour length')
 
 
 % Plot one
-ci=14;
+ci=2;
 cind = find(cidx==ci);
 cm=colormap(jet(length(cind)+1));
 num = 0
