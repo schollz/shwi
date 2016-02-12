@@ -7,8 +7,6 @@ warning('off','all')
 warning
 
 
-% r = collectMats('D:\Marszalek Lab\Force Curves\7i27');
-% r = collectAFMs('D:\Marszalek Lab\Force Curves\3I27_Luciferase_4I27\130513_3I27Luc4I27_fraction34_100x_10mMATP_0MGCl_5mMDTA_0mMLuciferin_OBL');
 folder = '../testdata/8i27';
 r = collectMats(folder,0);
 

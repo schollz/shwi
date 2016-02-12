@@ -1,6 +1,6 @@
-function [data,Foriginal] = generateCurve(params)
+function [data,Foriginal,rlocs,rpks] = generateCurve(params)
 % GENERATE A CURVE
-% [data,Foriginal] = generateCurve(params)
+% [data,Foriginal,rlocs,rpeaks] = generateCurve(params)
 % data = [x,y] of generatedCurve
 % Foriginal is y without noise
 %
@@ -141,8 +141,14 @@ Fbaseline = Fbaseline + xTraj;
 
 %% Finish
 data = [xbaseline; Fbaseline]';
-close all;
-plot(data(:,1),data(:,2))
+% close all;
+% plot(data(:,1),data(:,2))
 
+[pks,locs] = findpeaks(Foriginal,'MinPeakProminence',2,'MinPeakDistance',5,'MinPeakHeight',5);
+rpks = pks;
+for i=1:length(locs)
+    locs(i) = xbaseline(locs(i));
+end
+rlocs = locs;
 
 end

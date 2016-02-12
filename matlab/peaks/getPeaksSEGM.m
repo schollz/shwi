@@ -1,4 +1,10 @@
-function [pks,locs] = findFEpeaks(xbaseline,Fbaseline)
+function [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
+% Gets peaks using the SEGM method
+% [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
+
+    if nargin < 3
+       toPlot = 0;
+    end
     xbaseline = xbaseline(find(Fbaseline>-50));
     Fbaseline = Fbaseline(find(Fbaseline>-50));
 
@@ -41,13 +47,17 @@ function [pks,locs] = findFEpeaks(xbaseline,Fbaseline)
     newX = dats(:,1);
     newY = dats(:,2);
 
-    [pks,locs] = findpeaks(newY,newX,'MinPeakProminence',6,'MinPeakDistance',12,'MinPeakHeight',11);
-%     subplot(2,1,1)
-%     plot(xbaseline,Fbaseline,xbaseline,segm,'.',locs,pks,'or',newX,newY,'m*-')
-%     subplot(2,1,2)
-%     plot(locs,pks,'or',newX,newY,'m-')
+    [pks,locs] = findpeaks(newY,newX,'MinPeakProminence',7,'MinPeakDistance',12,'MinPeakHeight',11);
     
-%      axis([-100 500 -150 250])
+ 
+    if toPlot > 0
+    subplot(2,1,1)
+    plot(xbaseline,Fbaseline,xbaseline,segm,'.',locs,pks,'or',newX,newY,'m*-')
+    subplot(2,1,2)
+    plot(locs,pks,'or',newX,newY,'m-')
+    
+     axis([-100 500 -150 250])
+    end
 
 
 end
