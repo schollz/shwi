@@ -47,7 +47,7 @@ function [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
     newX = dats(:,1);
     newY = dats(:,2);
 
-    [pks,locs] = findpeaks(newY,newX,'MinPeakProminence',7,'MinPeakDistance',12,'MinPeakHeight',11);
+    [pks,locs] = findpeaks(newY,newX,'MinPeakProminence',10,'MinPeakDistance',20,'MinPeakHeight',30);
     
  
     if toPlot > 0
