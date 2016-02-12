@@ -60,8 +60,8 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,ite
                     movement = movement - mean(newAdj);
                 end
             end
-            drawPieces(r)
-            pause(0.1)
+%             drawPieces(r)
+%             pause(0.1)
             lastMovement = [movement lastMovement];
             lastMovement = lastMovement(1:3);
             if abs(mean(lastMovement) - lastMovementMean) < 1
@@ -122,6 +122,7 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,ite
     allBlocks(allBlocks==-99) = 1+max(max(allBlocks));
     imagesc(flipud(allBlocks))
     newMinR = -1 * (-round(minR)+10);
+    meanDifferenceSDmean = 0;
 end
 
 

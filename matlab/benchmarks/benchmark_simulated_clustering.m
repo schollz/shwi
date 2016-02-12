@@ -9,7 +9,7 @@ warning
 params.Persistence = 0.4;
 
 %% Use a simulated data set
-for i=1:50
+for i=1:10
     params.Force = 100;
     params.ForceSD = 1;
     params.Lc = 28;
@@ -170,8 +170,8 @@ originalR = r;
 %% Use a real data
 filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\3I27_Luciferase_4I27')
 filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\AllYeastPGK\yPGKCCdumped');
-filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\AllYeastPGK\YeastPGK');
 filelist1 = getAllFiles('../testdata/');
+filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\AllYeastPGK\YeastPGK');
 i = 0;
 clear filelist
 clear r
