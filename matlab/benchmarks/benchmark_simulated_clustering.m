@@ -232,7 +232,7 @@ ylabel('Group Number')
 cidx = cluster(Z,'MaxClust',numClusters);
 group = cidx;
 subplot(2,1,1)
-[r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,1:max(cidx),200,group);
+[r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,1:max(cidx),50,group);
 % [r,minR,meanDifferenceSDmean] = iterativeAlignment(r,ones(size(r)),ones(size(r)),200,ones(size(r)));
 
 % Calculate Kernel density
@@ -325,7 +325,7 @@ numClusters = numClusters -1
 
 %% Actually plot clusters
 figure(10)
-numClusters = 2
+numClusters = 4
 Z = linkage(distMatrix,'ward','euclidean');
 close all; figure;
 subplot(1,2,2)
