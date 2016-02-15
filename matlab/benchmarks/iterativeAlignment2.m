@@ -22,6 +22,7 @@ iterations = 1;
 group = cidx;
 
 
+
     % Initialize Ladj for each
     for i=1:length(r)
         r{i}.Ladj = 0;

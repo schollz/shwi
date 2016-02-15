@@ -14,7 +14,7 @@ for theForceI=1:length(theForces)
     fps = 0;
     fns = 0;
 
-for theIterations=1:1
+for theIterations=1:50
     theForce = theForces(theForceI);
     theLc = theLCs(theLcI);
 

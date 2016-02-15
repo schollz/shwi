@@ -35,6 +35,7 @@ group = cidx;
 perm = 1:max(cidx);
 iterations = 30;
 group = cidx;
+tic
 [r distMatrix] = calculatingMatrix(r);
 
     % Initialize Ladj for each
@@ -44,7 +45,7 @@ group = cidx;
     drawPiecesGetIteration1(r)
     pause(0.1)
     % Iterative alignment
-    tic
+
     textprogressbar('iterative alignment: ');
     numIterations = iterations;
     for numRuns = 1:numIterations
