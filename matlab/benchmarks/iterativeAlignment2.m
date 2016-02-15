@@ -9,12 +9,8 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,ite
 % trueCidx = [];
 % lcSD=1;
 % 
-% for i=1:12
-%     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
-%     cidx(i) = 1;
-% end
-% for i=12:20
-%     r{i}.L = [ 30 + lcSD.*randn(1,1)  100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
+% for i=1:80
+%     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1) 5*rand(1,1)] + -10 + (30--10)*rand(1,1);
 %     cidx(i) = 1;
 % end
 % perm = 1:max(cidx);
@@ -28,12 +24,15 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,ite
     end
 tic
     % Iterative alignment
-%     textprogressbar('iterative alignment: ');
+    drawPieces(r)
+    pause(0.1)
+%    textprogressbar('iterative alignment: ');
     isDone = zeros(length(cidx),1); 
     for ci=1:max(cidx)
-        lastMovementMean = 0;
+        lastMovementMean = 1000;
         lastMovement = [0 0 0];
-        for kkk=1:20
+        movementType=[3 3 2 2 1 1 1];
+        for kkk=1:length(movementType)
 %             textprogressbar((kkk+20*(ci-1))/(20*max(cidx))*100)
             movement = 0;
             toProcess =find(cidx==ci);
@@ -51,10 +50,10 @@ tic
                     end
                 end
                 if mean(newAdj) > 0
-                    r{i}.Ladj = r{i}.Ladj + 1;
+                    r{i}.Ladj = r{i}.Ladj + movementType(kkk);
                     movement = movement + mean(newAdj);
                 elseif mean(newAdj) < 0
-                    r{i}.Ladj = r{i}.Ladj - 1;
+                    r{i}.Ladj = r{i}.Ladj - movementType(kkk);
                     movement = movement - mean(newAdj);
                 end
             end
@@ -62,10 +61,10 @@ tic
             pause(0.1)
             lastMovement = [movement lastMovement];
             lastMovement = lastMovement(1:3);
-            if abs(mean(lastMovement) - lastMovementMean) < 10
+            if abs(mean(lastMovement) - lastMovementMean) < 1
                 break
             end
-            disp(sprintf('%2.0f\n',abs(mean(lastMovement) - lastMovementMean)))
+            disp(sprintf('%2.0f %2.0f\n',mean(lastMovement),abs(mean(lastMovement) - lastMovementMean)))
             lastMovementMean = mean(lastMovement);
         end
     end

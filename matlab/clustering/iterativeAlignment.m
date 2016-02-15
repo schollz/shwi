@@ -7,19 +7,33 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,iter
 % trueCidx = [];
 % lcSD=1;
 % 
-% for i=1:12
-%     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
+% % for i=1:20
+% %     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (80--10)*rand(1,1);
+% %     cidx(i) = 1;
+% % end
+% % for i=20:50
+% %     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1) 100.*randn(1,1)] + -10 + (80--10)*rand(1,1);
+% %     cidx(i) = 1;
+% % end
+% % for i=50:60
+% %     r{i}.L = [ 30 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (80--10)*rand(1,1);
+% %     cidx(i) = 1;
+% % end
+% 
+% for i=1:25
+%     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (80--10)*rand(1,1);
 %     cidx(i) = 1;
 % end
-% for i=12:20
-%     r{i}.L = [ 30 + lcSD.*randn(1,1)  100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
+% for i=26:50
+%     r{i}.L = [ 12 + lcSD.*randn(1,1) 24 + lcSD.*randn(1,1) 36 + lcSD.*randn(1,1) 100.*randn(1,1)] + -10 + (80--10)*rand(1,1);
 %     cidx(i) = 1;
 % end
+% 
 % perm = 1:max(cidx);
 % iterations = 1;
 % group = cidx;
 % perm = 1:max(cidx);
-% iterations = 100;
+% iterations = 30;
 % group = cidx;
 % [r distMatrix] = calculatingMatrix(r);
 
@@ -27,8 +41,10 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,iter
     for i=1:length(r)
         r{i}.Ladj = 0;
     end
-
+    drawPiecesGetIteration1(r)
+    pause(0.1)
     % Iterative alignment
+    tic
     textprogressbar('iterative alignment: ');
     numIterations = iterations;
     for numRuns = 1:numIterations
@@ -60,9 +76,10 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,iter
             end
         end
             drawPiecesGetIteration1(r)
-            pause(0.1)
+            pause(0.05)
     end
     textprogressbar('done');
+    toc
     
     meanDifferenceSDmean = zeros(max(cidx),1);
     for i=1:length(meanDifferenceSD)
