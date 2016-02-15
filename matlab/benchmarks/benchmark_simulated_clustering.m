@@ -2,6 +2,7 @@ addpath('../util');
 addpath('../force-curve-util/');
 addpath('../clustering/');
 addpath('../peaks/');
+addpath('../benchmarks');
 close all;
 clear all;
 warning('off','all')

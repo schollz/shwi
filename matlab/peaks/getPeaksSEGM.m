@@ -52,7 +52,7 @@ function [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
 
     % Prune peaks that are not close to any point
     rmsLevel = 3*std(Fbaseline(end-100:end));
-    [pks,locs] = findpeaks(newY,newX,'MinPeakProminence',5,'MinPeakDistance',10,'MinPeakHeight',12);
+    [pks,locs] = findpeaks(newY,newX,'MinPeakProminence',5,'MinPeakDistance',8,'MinPeakHeight',12);
     newPks = [];
     newLocs = [];
     for i=1:length(pks)

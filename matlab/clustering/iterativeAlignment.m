@@ -1,41 +1,41 @@
 function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,iterations,group)
     %% Perform iterative alignment
-% clear r
-% clear cidx 
-% clear perm
-% clear group
-% trueCidx = [];
-% lcSD=1;
-% 
-% % for i=1:20
-% %     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (80--10)*rand(1,1);
-% %     cidx(i) = 1;
-% % end
-% % for i=20:50
-% %     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1) 100.*randn(1,1)] + -10 + (80--10)*rand(1,1);
-% %     cidx(i) = 1;
-% % end
-% % for i=50:60
-% %     r{i}.L = [ 30 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (80--10)*rand(1,1);
-% %     cidx(i) = 1;
-% % end
-% 
-% for i=1:25
+clear r
+clear cidx 
+clear perm
+clear group
+trueCidx = [];
+lcSD=1;
+
+% for i=1:20
 %     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (80--10)*rand(1,1);
 %     cidx(i) = 1;
 % end
-% for i=26:50
-%     r{i}.L = [ 12 + lcSD.*randn(1,1) 24 + lcSD.*randn(1,1) 36 + lcSD.*randn(1,1) 100.*randn(1,1)] + -10 + (80--10)*rand(1,1);
+% for i=20:50
+%     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1) 100.*randn(1,1)] + -10 + (80--10)*rand(1,1);
 %     cidx(i) = 1;
 % end
-% 
-% perm = 1:max(cidx);
-% iterations = 1;
-% group = cidx;
-% perm = 1:max(cidx);
-% iterations = 30;
-% group = cidx;
-% [r distMatrix] = calculatingMatrix(r);
+% for i=50:60
+%     r{i}.L = [ 30 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (80--10)*rand(1,1);
+%     cidx(i) = 1;
+% end
+
+for i=1:25
+    r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (80--10)*rand(1,1);
+    cidx(i) = 1;
+end
+for i=26:50
+    r{i}.L = [ 12 + lcSD.*randn(1,1) 24 + lcSD.*randn(1,1) 36 + lcSD.*randn(1,1) 100.*randn(1,1)] + -10 + (80--10)*rand(1,1);
+    cidx(i) = 1;
+end
+
+perm = 1:max(cidx);
+iterations = 1;
+group = cidx;
+perm = 1:max(cidx);
+iterations = 30;
+group = cidx;
+[r distMatrix] = calculatingMatrix(r);
 
     % Initialize Ladj for each
     for i=1:length(r)
