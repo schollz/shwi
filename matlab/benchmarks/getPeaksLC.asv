@@ -1,0 +1,54 @@
+function [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
+% Gets peaks using the SEGM method
+% [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
+    if nargin < 3
+       toPlot = 0;
+    end
+%     
+
+xbaseline = r{1}.x;
+Fbaseline= r{1}.y;
+toPlot = 1;
+
+x = xbaseline;
+y = Fbaseline;
+
+allLcs = []
+for di=1:length(y)
+    if y(di) > 10
+        try
+            LC0 = getLc2(0.4,x(di),y(di));
+            allLcs = [allLcs; LC0];
+        catch
+        end
+    end
+end
+[f,xi]=ksdensity(allLcs,linspace(0,max(x),length(x)),'bandwidth',5);
+subplot(2,1,2)
+[PKS,LOCS] = findpeaks(f,xi,'MinPeakProminence',0.0001,'MinPeakHeight',1e-3,'MinPeakDistance',5);
+plot(xi,f,LOCS,PKS,'o')
+L = LOCS;
+F = PKS;
+pause(0.05)
+
+Fpks = zeros(size(L));
+Xpks = zeros(size(L));
+for i=1:length(L)
+    yMax = WLC4(0.3,L(i),x+1)+1;
+    yMin = WLC4(0.5,L(i),x-1)-1;
+    plot(x,y,x,yMin,x,yMax)
+    axis([0 max(x) -50 max(y)])
+    yInd = find(y>yMin & y < yMax);
+    [Fpks(i),ind] = max(y(yInd));
+    Xpks(i) = x(inyIndd);
+end
+
+
+locs = L;
+pks = Xpks;
+if toPlot > 0
+    plot(xbaseline,Fbaseline,locs,pks,'or')
+end
+
+
+end
