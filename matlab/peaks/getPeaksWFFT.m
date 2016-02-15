@@ -57,7 +57,7 @@ end
 PeakSig = (coefficientSum(1:end));
 
 % Find peaks using the protein database parameters
-[pks,locs] = findpeaks(PeakSig,'SORTSTR','descend','MinPeakProminence',8,'minpeakdistance',minPeakDistance,'minpeakheight',minPeakHeight);
+[pks,locs] = findpeaks(PeakSig,'SORTSTR','descend','MinPeakProminence',5,'minpeakdistance',minPeakDistance,'minpeakheight',minPeakHeight);
 
 
 

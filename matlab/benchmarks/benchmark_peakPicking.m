@@ -12,17 +12,21 @@ total1 = 0;
 tps1 = 0;
 fps1 = 0;
 fns1 = 0;  
+total3 = 0;
+tps3 = 0;
+fps3 = 0;
+fns3 = 0;  
 
 for theIterations=1:50
     theForce = theForces(theForceI);
 
     params.Force = theForce;
     params.ForceSD = 0;
-    params.Lc = 80;
+    params.Lc = 30;
     params.LcSD = 0;
     params.Persistence = 0.4;
-    params.numPeaks = 4;
-    params.rmsNoise = 7;
+    params.numPeaks = 12;
+    params.rmsNoise = 10;
     params.nonSpecificForce = 50;
     params.nonSpecificForceSD = 10;
     params.nonSpecificForces = 0;
@@ -34,7 +38,6 @@ for theIterations=1:50
     pause(0.2)
     klocs = locs_g;
     kpks = pks_g;
-
     realPeaks = rlocs;
     guessPeaks = locs_g';
     [vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,5);
@@ -47,10 +50,26 @@ for theIterations=1:50
     fps1 = fps1 + falsePositives;
     fns1 = fns1 + falseNegatives;
 
+    [pks_g,locs_g] = getPeaksLC(data(:,1),data(:,2),1);
+    pause(0.2)
+    klocs = locs_g';
+    kpks = pks_g';
+    realPeaks = rlocs;
+    guessPeaks = locs_g';
+    [vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,5);
+    truePositives = sum(vecDoneOriginal>0);
+    falseNegatives = sum(vecDoneOriginal==0);
+    [vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,5);
+    falsePositives = sum(vecDoneOriginal==0);
+    total3 = total3 + length(realPeaks);
+    tps3 = tps3 + truePositives;
+    fps3 = fps3 + falsePositives;
+    fns3 = fns3 + falseNegatives;
 
 
-    minPeakDistance = 12;
-    minPeakHeight = 11;
+
+    minPeakDistance = 10;
+    minPeakHeight = 12;
     bestLength = 5;
     [peaks] = getPeaksWFFT(data(:,1),data(:,2),minPeakDistance,minPeakHeight,bestLength);
     wpks = peaks(:,2);
@@ -76,8 +95,9 @@ disp(sprintf('PARAMETERS'))
 disp(sprintf('\tTPR\tFPR'))
 disp(sprintf('WFFT\t%2.0f\t%2.0f',100*tps2/total2,100*fps2/total2))
 disp(sprintf('SEGM\t%2.0f\t%2.0f',100*tps1/total1,100*fps1/total1))
+disp(sprintf('  LC\t%2.0f\t%2.0f',100*tps3/total3,100*fps3/total1))
 
-forceLevel = [forceLevel; theForce 100*tps2/total2 100*tps1/total1  100*fps2/total2 100*fps1/total1];
+forceLevel = [forceLevel; theForce 100*tps3/total3 100*tps2/total2 100*tps1/total1  100*fps3/total3  100*fps2/total2 100*fps1/total1];
 
 end
 
@@ -88,6 +108,6 @@ plot(data(:,1),data(:,2),rlocs,rpks,'+',wlocs,wpks,'*',klocs,kpks,'o','MarkerSiz
 legend('Generated','REAL','WFFT','SEGM','location','NorthEastOutside')
 axis([-50 450 -200 400])
 subplot(2,1,2)
-plot(forceLevel(:,1),forceLevel(:,2),'o-',forceLevel(:,1),forceLevel(:,4),'o-',forceLevel(:,1),forceLevel(:,3),'o-',forceLevel(:,1),forceLevel(:,5),'o-')
-legend('WFFT TPR','WFFT FPR','SEGM TPR','SEGM FPR','location','NorthEastOutside')
+plot(forceLevel(:,1),forceLevel(:,2),'o-',forceLevel(:,1),forceLevel(:,5),'o-',forceLevel(:,1),forceLevel(:,3),'o-',forceLevel(:,1),forceLevel(:,6),'o-',forceLevel(:,1),forceLevel(:,4),'o-',forceLevel(:,1),forceLevel(:,7),'o-')
+legend('LC TPR','LC FPR','WFFT TPR','WFFT FPR','SEGM TPR','SEGM FPR','location','NorthEastOutside')
 axis([0 200 -5 105])
