@@ -1,5 +1,27 @@
 function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,iterations,group)
     %% Perform iterative alignment
+% clear r
+% clear cidx 
+% clear perm
+% clear group
+% trueCidx = [];
+% lcSD=1;
+% 
+% for i=1:12
+%     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
+%     cidx(i) = 1;
+% end
+% for i=12:20
+%     r{i}.L = [ 30 + lcSD.*randn(1,1)  100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
+%     cidx(i) = 1;
+% end
+% perm = 1:max(cidx);
+% iterations = 1;
+% group = cidx;
+% perm = 1:max(cidx);
+% iterations = 100;
+% group = cidx;
+% [r distMatrix] = calculatingMatrix(r);
 
     % Initialize Ladj for each
     for i=1:length(r)
@@ -37,6 +59,8 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,iter
 
             end
         end
+            drawPiecesGetIteration1(r)
+            pause(0.1)
     end
     textprogressbar('done');
     
@@ -78,6 +102,7 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,iter
                 minR = min((r{i}.L + r{i}.Ladj));
             end      
         end
+        
     end
 
 

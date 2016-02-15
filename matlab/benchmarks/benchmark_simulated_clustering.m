@@ -218,6 +218,56 @@ for num=1:length(filelist1)
 end
 originalR = r;
 
+
+
+%% Use a real data
+filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\3I27_Luciferase_4I27')
+filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\AllYeastPGK\yPGKCCdumped');
+filelist1 = getAllFiles('../testdata/');
+filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\AllYeastPGK\YeastPGK');
+i = 0;
+clear filelist
+clear r
+for num=1:length(filelist1)
+    if ~isempty(findstr(filelist1{num},'.afm'))==1
+        try
+            i = i + 1;
+            disp(num)
+            data = importdata(char(filelist1{num}));
+            subplot(2,1,1)
+            [origin] = getOrigin(data(:,1),data(:,2),1);
+            axis([0 max(data(:,1)) -50 max(data(:,2))])
+            pause(0.05)
+            r{i}.x = data(:,1)-origin(:,1);
+            r{i}.y = data(:,2)-origin(:,2);
+            clear data
+            r{i}.file = sprintf('%d',i);
+            r{i}.name = char(filelist1{num});
+            allLcs = []
+            for di=1:length(r{i}.y)
+                if r{i}.y(di) > 10
+                    try
+                        LC0 = getLc2(0.4,r{i}.x(di),r{i}.y(di));
+                        allLcs = [allLcs; LC0];
+                    catch
+                    end
+                end
+            end
+            [f,xi]=ksdensity(allLcs,linspace(0,max(r{i}.x),length(r{i}.x)),'bandwidth',5);
+            subplot(2,1,2)
+            [PKS,LOCS] = findpeaks(f,xi,'MinPeakProminence',0.0001,'MinPeakHeight',1e-3,'MinPeakDistance',5);
+            plot(xi,f,LOCS,PKS,'o')
+            r{i}.L = LOCS;
+            r{i}.F = PKS;
+            pause(0.05)
+        catch
+            disp('error')
+            i = i - 1
+        end
+    end
+end
+originalR = r;
+
 r = originalR;
 
 %% Iterative pruning
@@ -325,7 +375,7 @@ numClusters = numClusters -1
 
 %% Actually plot clusters
 figure(10)
-numClusters = 4
+numClusters = 20
 Z = linkage(distMatrix,'ward','euclidean');
 close all; figure;
 subplot(1,2,2)
@@ -335,7 +385,7 @@ cidx = cluster(Z,'MaxClust',numClusters);
 cidx = T;
 group = cidx;
 subplot(1,2,1)
-[r,minR,meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,100,group);
+[r,minR,meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,10,group);
 disp(numClusters)
 newCriterion = log(mean(meanDifferenceSDmean)) + log(numClusters);
 ylabel('Record Number')

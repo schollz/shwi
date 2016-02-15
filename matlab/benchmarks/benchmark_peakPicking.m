@@ -1,5 +1,5 @@
 forceLevel = [];
-theForces = [10 12 14 18 24 30 36 40 80];
+theForces = [10 12 14 18 22 26 30 36 40 60 80 100];
 
 
 for theForceI=1:length(theForces)
@@ -13,16 +13,16 @@ tps1 = 0;
 fps1 = 0;
 fns1 = 0;  
 
-for theIterations=1:10
+for theIterations=1:50
     theForce = theForces(theForceI);
 
     params.Force = theForce;
     params.ForceSD = 0;
-    params.Lc = 28;
+    params.Lc = 80;
     params.LcSD = 0;
     params.Persistence = 0.4;
-    params.numPeaks = 12;
-    params.rmsNoise = 10;
+    params.numPeaks = 4;
+    params.rmsNoise = 7;
     params.nonSpecificForce = 50;
     params.nonSpecificForceSD = 10;
     params.nonSpecificForces = 0;
@@ -31,6 +31,7 @@ for theIterations=1:10
     [data,Foriginal,rlocs,rpks] = generateCurve(params);
 
     [pks_g,locs_g] = getPeaksSEGM(data(:,1),data(:,2),1);
+    pause(0.2)
     klocs = locs_g;
     kpks = pks_g;
 

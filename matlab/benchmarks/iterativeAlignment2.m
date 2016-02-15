@@ -1,6 +1,7 @@
 function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,iterations,group)
 %% Perform iterative alignment
 % 
+% 
 % clear r
 % clear cidx 
 % clear perm
@@ -8,17 +9,13 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,ite
 % trueCidx = [];
 % lcSD=1;
 % 
-% for i=1:10
+% for i=1:12
 %     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
 %     cidx(i) = 1;
 % end
-% for i=10:20
-%     r{i}.L = [ 40 + lcSD.*randn(1,1) 50 + lcSD.*randn(1,1) 60 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
-%     cidx(i) = 2;
-% end
-% for i=20:30
-%     r{i}.L = [ 10 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 90 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
-%     cidx(i) = 3;
+% for i=12:20
+%     r{i}.L = [ 30 + lcSD.*randn(1,1)  100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
+%     cidx(i) = 1;
 % end
 % perm = 1:max(cidx);
 % iterations = 1;
@@ -29,23 +26,24 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,ite
     for i=1:length(r)
         r{i}.Ladj = 0;
     end
-
+tic
     % Iterative alignment
-    textprogressbar('iterative alignment: ');
+%     textprogressbar('iterative alignment: ');
     isDone = zeros(length(cidx),1); 
     for ci=1:max(cidx)
         lastMovementMean = 0;
         lastMovement = [0 0 0];
         for kkk=1:20
-            textprogressbar((kkk+20*(ci-1))/(20*max(cidx))*100)
+%             textprogressbar((kkk+20*(ci-1))/(20*max(cidx))*100)
             movement = 0;
             toProcess =find(cidx==ci);
             iArray = toProcess(randperm(length(toProcess)));
             jArray = toProcess(randperm(length(toProcess)));
-            for ii=1:length(iArray)
+            for ii=1:length(iArray)-1
                 i=iArray(ii);
                 newAdj = [];
-                for jj=1:length(jArray)
+                for jj=ii:length(jArray)
+%                     disp(sprintf('%d %d %d %d',ci,kkk,ii,jj))
                     j=jArray(jj);
                     if j~=i
                         [shiftAmount] = getAlignmentDifference(r{j}.L-r{j}.Ladj,r{i}.L-r{i}.Ladj);
@@ -60,18 +58,19 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,ite
                     movement = movement - mean(newAdj);
                 end
             end
-%             drawPieces(r)
-%             pause(0.1)
+            drawPieces(r)
+            pause(0.1)
             lastMovement = [movement lastMovement];
             lastMovement = lastMovement(1:3);
-            if abs(mean(lastMovement) - lastMovementMean) < 1
+            if abs(mean(lastMovement) - lastMovementMean) < 10
                 break
             end
+            disp(sprintf('%2.0f\n',abs(mean(lastMovement) - lastMovementMean)))
             lastMovementMean = mean(lastMovement);
         end
     end
-    textprogressbar('done');
-    
+%     textprogressbar('done');
+    toc
     for i=1:length(r)
         r{i}.Ladj = -1*r{i}.Ladj;
     end
