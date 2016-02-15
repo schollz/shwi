@@ -1,5 +1,5 @@
 forceLevel = [];
-theForces = [10 12 14 18 22 26 30 36 40 60 80 100];
+theForces = [14 16 18 21 24 27 30 35 40 50 60 ];
 
 
 for theForceI=1:length(theForces)
@@ -17,15 +17,15 @@ tps3 = 0;
 fps3 = 0;
 fns3 = 0;  
 
-for theIterations=1:50
+for theIterations=1:10
     theForce = theForces(theForceI);
 
-    params.Force = theForce;
+    params.Force = 18;
     params.ForceSD = 0;
-    params.Lc = 30;
+    params.Lc = 22.5;
     params.LcSD = 0;
     params.Persistence = 0.4;
-    params.numPeaks = 12;
+    params.numPeaks = 7;
     params.rmsNoise = 10;
     params.nonSpecificForce = 50;
     params.nonSpecificForceSD = 10;
@@ -40,10 +40,10 @@ for theIterations=1:50
     kpks = pks_g;
     realPeaks = rlocs;
     guessPeaks = locs_g';
-    [vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,5);
+    [vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,10);
     truePositives = sum(vecDoneOriginal>0);
     falseNegatives = sum(vecDoneOriginal==0);
-    [vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,5);
+    [vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,10);
     falsePositives = sum(vecDoneOriginal==0);
     total1 = total1 + length(realPeaks);
     tps1 = tps1 + truePositives;
@@ -56,10 +56,10 @@ for theIterations=1:50
     kpks = pks_g';
     realPeaks = rlocs;
     guessPeaks = locs_g';
-    [vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,5);
+    [vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,10);
     truePositives = sum(vecDoneOriginal>0);
     falseNegatives = sum(vecDoneOriginal==0);
-    [vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,5);
+    [vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,10);
     falsePositives = sum(vecDoneOriginal==0);
     total3 = total3 + length(realPeaks);
     tps3 = tps3 + truePositives;
@@ -77,10 +77,10 @@ for theIterations=1:50
     locs_g = peaks(:,1);
     realPeaks = rlocs;
     guessPeaks = locs_g';
-    [vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,5);
+    [vecDoneOriginal] = getMatches2(realPeaks,guessPeaks,10);
     truePositives = sum(vecDoneOriginal>0);
     falseNegatives = sum(vecDoneOriginal==0);
-    [vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,5);
+    [vecDoneOriginal] = getMatches2(guessPeaks,realPeaks,10);
     falsePositives = sum(vecDoneOriginal==0);
     total2 = total2 + length(realPeaks);
     tps2 = tps2 + truePositives;
@@ -110,4 +110,4 @@ axis([-50 450 -200 400])
 subplot(2,1,2)
 plot(forceLevel(:,1),forceLevel(:,2),'o-',forceLevel(:,1),forceLevel(:,5),'o-',forceLevel(:,1),forceLevel(:,3),'o-',forceLevel(:,1),forceLevel(:,6),'o-',forceLevel(:,1),forceLevel(:,4),'o-',forceLevel(:,1),forceLevel(:,7),'o-')
 legend('LC TPR','LC FPR','WFFT TPR','WFFT FPR','SEGM TPR','SEGM FPR','location','NorthEastOutside')
-axis([0 200 -5 105])
+axis([min(theForces) max(theForces) -5 105])
