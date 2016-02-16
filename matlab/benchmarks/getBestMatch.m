@@ -7,16 +7,11 @@ function [bestMatch] = getBestMatch(a,bOriginal)
 % bOriginal=[31 57 70 88];
 posibilities = [];
 num = 0;
-clear bestMatching
 for ai=1:length(a)
     for bi=1:length(bOriginal)
         bMod =  (bOriginal(bi)-a(ai));
         b = bOriginal - bMod;
-        try
-            aMatched = getMatches2(a,b,10);
-        catch
-            aMatched = getMatches2(a',b',10);            
-        end
+        aMatched = getMatches2(reshape(a,1,length(a)),reshape(b,1,length(b)),10);
         if sum(aMatched>0)==0
             continue
         end

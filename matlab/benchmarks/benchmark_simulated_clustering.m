@@ -376,7 +376,7 @@ numClusters = numClusters -1
 
 %% Actually plot clusters
 figure(10)
-numClusters = 20
+numClusters = 20;
 Z = linkage(distMatrix,'ward','euclidean');
 close all; figure;
 subplot(1,2,2)

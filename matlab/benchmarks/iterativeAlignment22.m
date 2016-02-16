@@ -2,44 +2,44 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment22(r,cidx,perm,it
 %% Perform iterative alignment
 % 
 % 
-clear r
-clear cidx 
-clear perm
-clear group
-trueCidx = [];
-lcSD=1;
+% clear r
+% clear cidx 
+% clear perm
+% clear group
+% trueCidx = [];
+% lcSD=1;
+% 
+% for i=1:20
+%     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
+%     cidx(i) = 1;
+% end
+% for i=21:40
+%     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
+%     cidx(i) = 1;
+% end
+% % for i=41:60
+% %     r{i}.L = [ 30 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
+% %     cidx(i) = 1;
+% % end
+% perm = 1:max(cidx);
+% iterations = 1;
+% group = cidx;
 
-for i=1:20
-    r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1) 130.*rand(1,1)] + -10 + (30--10)*rand(1,1);
-    cidx(i) = 1;
-end
-for i=21:40
-    r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1) 130.*rand(1,1)] + -10 + (30--10)*rand(1,1);
-    cidx(i) = 1;
-end
-for i=41:60
-    r{i}.L = [ 30 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
-    cidx(i) = 1;
-end
-perm = 1:max(cidx);
-iterations = 1;
-group = cidx;
 
-
-% Initialize matching
-tic
-textprogressbar('matching peaks: ')
-num = 0
-for i=1:length(r)
-    for j=1:length(r)
-        num = num + 1;
-        textprogressbar(num/(length(r)^2)*100)
-        if i~=j
-            r{i}.bestMatch{j} = getBestMatch(r{i}.L,r{j}.L);
+    % Initialize matching
+    tic
+    textprogressbar('matching peaks: ')
+    num = 0
+    for i=1:length(r)
+        for j=1:length(r)
+            num = num + 1;
+            textprogressbar(num/(length(r)^2)*100)
+            if i~=j
+                r{i}.bestMatch{j} = getBestMatch(r{i}.L,r{j}.L);
+            end
         end
     end
-end
-textprogressbar('done.')
+    textprogressbar('done.')
 
     % Initialize Ladj for each
     for i=1:length(r)
@@ -54,7 +54,7 @@ textprogressbar('done.')
     for ci=1:max(cidx)
         lastMovementMean = 1000;
         lastMovement = [0 0 0];
-        movementType=ones(1000,1)*.5;
+        movementType=ones(1000,1)*1;
         for kkk=1:length(movementType)
 %             textprogressbar((kkk+20*(ci-1))/(20*max(cidx))*100)
             movement = 0;
