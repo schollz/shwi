@@ -9,9 +9,9 @@ function [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
 % xbaseline = r{1}.x;
 % Fbaseline= r{1}.y;
 % toPlot = 1;
-% xbaseline=data(:,1)
-% Fbaseline=data(:,2)
-% toPlot = 1;
+xbaseline=data(:,1)
+Fbaseline=data(:,2)
+toPlot = 1;
 
 x = xbaseline;
 y = Fbaseline;

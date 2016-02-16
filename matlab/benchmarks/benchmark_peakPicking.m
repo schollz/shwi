@@ -1,7 +1,7 @@
 theForces = [15 17 20 24 28 32 36 40 50 60 70 100];
 theLCs = [15 20 25 30 40 60];
 
-for method = 1:3
+for method = 2:2
     figure(99)
 tpsMatrix = zeros(length(theLCs),length(theForces));
 fpsMatrix = zeros(length(theLCs),length(theForces));
