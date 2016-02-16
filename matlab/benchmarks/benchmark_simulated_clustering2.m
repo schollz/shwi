@@ -3,10 +3,10 @@
 
 
 %% Use a simulated "real" data set
-for i=1:20
+for i=1:10
     % Full Luciferase with random i27
     numI27 =randi(9,1,1)-1;
-    params.Force = sort([30 40 50 200*ones(1,numI27)]);
+    params.Force = sort([60 60 60 200*ones(1,numI27)]);
     params.ForceSD = 7.5;
     params.Lc = sort([30 80 130 190:28:190+28*(numI27-1)]);
     params.LcSD = 1;
@@ -42,10 +42,10 @@ for i=1:20
     pause(0.1)
     plot(r{i}.x,r{i}.y,rlocs,rpeaks,'x',locs,pks,'o')
 end
-for i=21:30
+for i=11:20
     % Full Luciferase split with random i27
     numI27 =randi(9,1,1)-1;
-    params.Force = sort([30 40 45 50 200*ones(1,numI27)]);
+    params.Force = sort([60 60 60 60 200*ones(1,numI27)]);
     params.ForceSD = 7.5;
     params.Lc = sort([30 80 100 130 190:28:190+28*(numI27-1)]);
     params.LcSD = 1;
@@ -139,6 +139,6 @@ cidx = T;
 group = cidx;
 subplot(1,2,1)
 [r,minR,meanDifferenceSDmean] = iterativeAlignment22(r,cidx,perm,10,group);
-[r,minR,meanDifferenceSDmean] = iterativeAlignment22(r,ones(size(cidx)),1,10,ones(size(cidx)));
+% [r,minR,meanDifferenceSDmean] = iterativeAlignment22(r,ones(size(cidx)),1,10,ones(size(cidx)));
 ylabel('Record Number')
 xlabel('Contour length')

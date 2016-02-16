@@ -1,5 +1,5 @@
-theForces = [15 20 25 30 40 60 100];
-theLCs = [20 30 40 60];
+theForces = [15 17 20 24 28 32 36 40 50 60 70 100];
+theLCs = [15 20 25 30 40 60];
 
 for method = 1:3
     figure(99)
@@ -112,6 +112,8 @@ set(gca,'XTick', 1:length(theForces),'XTickLabel',theForces);
 xlabel('Unfolding force [pN]')
 ylabel('Contour length increment [nm]')
 caxis([0 100])
+
+figure(99)
 
 end
 
