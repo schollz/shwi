@@ -1,5 +1,9 @@
 
-
+addpath('../util');
+addpath('../force-curve-util/');
+addpath('../clustering/');
+addpath('../peaks/');
+addpath('../benchmarks');
 
 
 %% Use a simulated "real" data set
@@ -128,7 +132,7 @@ r=originalR;
 
 
 figure(10)
-numClusters = 2;
+numClusters = 5;
 Z = linkage(distMatrix,'ward','euclidean');
 close all; figure;
 subplot(1,2,2)

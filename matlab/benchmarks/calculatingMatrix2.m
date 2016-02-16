@@ -32,8 +32,12 @@ function [r,distMatrix] = calculatingMatrix2(r)
                         numMatched = numMatched + 1;
                     end
                 end
-                distMatrix(i,j) = error/numMatched;
-                distMatrix(j,i) = error/numMatched;
+                error = error/numMatched;
+                if isnan(error)
+                    error = 0
+                end
+                distMatrix(i,j) = error;
+                distMatrix(j,i) = error;
             end
 
         end
