@@ -1,5 +1,9 @@
 function [r,distMatrix] = calculatingMatrix2(r)
     rLength = length(r);
+    for i=1:rLength
+        r{i}.L = unique(r{i}.L);
+        r{i}.F = unique(r{i}.F);
+    end
     textprogressbar('matching peaks: ')
     num = 0;
     for i=1:rLength

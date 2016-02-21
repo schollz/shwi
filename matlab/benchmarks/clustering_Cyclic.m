@@ -11,8 +11,13 @@ clear filelist
 clear r
 params.Persistence = 0.4;
 
+fsMain = 'D:\Marszalek Lab\Force Curves\Luc1-450\';
 
-filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\Luc1-450\160218_PBS2x_MLCT_EINSTEIN');
+fs = {'160218_PBS2x_MLCT_EINSTEIN',
+    '160218_MLCT_PBS2x_DAVINCI'}
+
+for jasldf=1:length(fs)
+filelist1 = getAllFiles([fsMain fs{jasldf}]);
 for num=1:length(filelist1)
     if ~isempty(findstr(filelist1{num},'.afm'))==1 & sum(findstr(filelist1{num},'_'))>2
         sSplit = strsplit(filelist1{num},'\');
@@ -39,15 +44,17 @@ for num=1:length(filelist1)
                 [pks,locs]=getPeaksLC(r{i}.x,r{i}.y,1);
                 pause(0.6)
                 r{i}.xPeaks = locs;
-                r{i}.F = [];
-                r{i}.L=[];
+                r{i}.xPeaks = [r{i}.xPeaks; r{i}.x(end)];
+                pks = [pks; r{i}.y(end)];
+                r{i}.F = [0];
+                r{i}.L=[0];
                 peaks = [];
                 for k=1:length(r{i}.xPeaks)
                     x=r{i}.xPeaks(k);
                     F=pks(k);
                     try
                         L0 = getLc(params.Persistence,x,F);
-                        if ~isnan(L0)
+                        if ~isnan(L0) && L0 > 0.1
                             r{i}.L = [r{i}.L; L0];
                             r{i}.F = [r{i}.F; pks(k)];
                         end
@@ -64,58 +71,6 @@ for num=1:length(filelist1)
         end
     end
 end
-
-filelist1 = getAllFiles('D:\Marszalek Lab\Force Curves\Luc1-450\160218_MLCT_PBS2x_DAVINCI');
-for num=1:length(filelist1)
-    if ~isempty(findstr(filelist1{num},'.afm'))==1 & sum(findstr(filelist1{num},'_'))>2
-        sSplit = strsplit(filelist1{num},'\');
-        sSplit = sSplit(end);
-        sSplit = strsplit(char(sSplit),'_');
-        sSplint = char(sSplit(end));
-        dT = str2num(sSplint(1:end-4))/100;
-        disp(sprintf('%s %2.2f',char(filelist1{num}),dT))
-        if dT > 0 & dT < 200000
-            i = i + 1;
-            try
-                disp(num)
-                disp(char(filelist1{num}))
-                data = importdata(char(filelist1{num}));
-                [origin] = getOrigin(data(:,1),data(:,2),1);
-                pause(0.05)
-                r{i}.x = data(:,1)-origin(:,1);
-                r{i}.y = data(:,2)-origin(:,2);
-                clear data
-                r{i}.file = sprintf('%d',i);
-                r{i}.name = char(filelist1{num});
-                r{i}.dT = dT;
-
-                [pks,locs]=getPeaksLC(r{i}.x,r{i}.y,1);
-                pause(0.6)
-                r{i}.xPeaks = locs;
-                r{i}.F = [];
-                r{i}.L=[];
-                peaks = [];
-                for k=1:length(r{i}.xPeaks)
-                    x=r{i}.xPeaks(k);
-                    F=pks(k);
-                    try
-                        L0 = getLc(params.Persistence,x,F);
-                        if ~isnan(L0)
-                            r{i}.L = [r{i}.L; L0];
-                            r{i}.F = [r{i}.F; pks(k)];
-                        end
-                    catch
-                    end
-                end
-                if length(r{i}.L) < 1
-                    i = i - 1;
-                    disp(sprintf('skipping %d',i))  
-                end
-            catch
-                i = i - 1;
-            end
-        end
-    end
 end
 originalR = r;
 
@@ -173,7 +128,7 @@ end
 
 
 % Plot one
-ci=16;
+ci=17;
 cind = find(cidx==ci);
 cm=colormap(jet(length(cind)+1));
 num = 0
