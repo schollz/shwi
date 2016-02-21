@@ -34,4 +34,7 @@ function [origin] = getBaseline(x,y,toPlot)
     xintersect = (p2(2)-p1(2))/(p1(1)-p2(1));
     yintersect = p1(1)*xintersect + p1(2);
     origin =[xintersect,yintersect];
+    if sum(isnan(origin))==2
+        origin = [0,0];
+    end
 end

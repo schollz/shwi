@@ -8,6 +8,14 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment22(r,cidx,perm,it
 % clear group
 % trueCidx = [];
 % lcSD=1;
+% for i=1:30
+%     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (80--10)*rand(1,1);
+%     cidx(i) = 1;
+% end
+% for i=15:30
+%     r{i}.L = [ 30 + lcSD.*randn(1,1)  100 + lcSD.*randn(1,1)] + -10 + (80--10)*rand(1,1);
+%     cidx(i) = 1;
+% end
 % 
 % for i=1:20
 %     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1)] + -10 + (30--10)*rand(1,1);
@@ -85,7 +93,7 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment22(r,cidx,perm,it
             lastMovement = [movement lastMovement];
             lastMovement = lastMovement(1:3);
             disp(sprintf('%2.3f %2.3f\n',mean(lastMovement),abs(mean(lastMovement) - lastMovementMean)))
-            if abs(mean(lastMovement) - lastMovementMean) < 1
+            if abs(mean(lastMovement) - lastMovementMean) < .4
                 break
             end
             lastMovementMean = mean(lastMovement);

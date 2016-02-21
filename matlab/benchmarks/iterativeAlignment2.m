@@ -2,24 +2,24 @@ function [r,newMinR, meanDifferenceSDmean] = iterativeAlignment2(r,cidx,perm,ite
 %% Perform iterative alignment
 % 
 % 
-clear r
-clear cidx 
-clear perm
-clear group
-trueCidx = [];
-lcSD=1;
-
-for i=1:20
-    r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1) 5*rand(1,1)] + -10 + (30--10)*rand(1,1);
-    cidx(i) = 1;
-end
-for i=1:20
-    r{i}.L = [ 12 + lcSD.*randn(1,1) 24 + lcSD.*randn(1,1) 36 + lcSD.*randn(1,1) 40.*randn(1,1)] + -10 + (80--10)*rand(1,1);
-    cidx(i) = 1;
-end
-perm = 1:max(cidx);
-iterations = 1;
-group = cidx;
+% clear r
+% clear cidx 
+% clear perm
+% clear group
+% trueCidx = [];
+% lcSD=1;
+% 
+% for i=1:20
+%     r{i}.L = [ 30 + lcSD.*randn(1,1) 70 + lcSD.*randn(1,1) 100 + lcSD.*randn(1,1) 5*rand(1,1)] + -10 + (30--10)*rand(1,1);
+%     cidx(i) = 1;
+% end
+% for i=1:20
+%     r{i}.L = [ 12 + lcSD.*randn(1,1) 24 + lcSD.*randn(1,1) 36 + lcSD.*randn(1,1) 40.*randn(1,1)] + -10 + (80--10)*rand(1,1);
+%     cidx(i) = 1;
+% end
+% perm = 1:max(cidx);
+% iterations = 1;
+% group = cidx;
 
 
 
@@ -50,8 +50,11 @@ tic
 %                     disp(sprintf('%d %d %d %d',ci,kkk,ii,jj))
                     j=jArray(jj);
                     if j~=i
+                        try
                         [shiftAmount] = getAlignmentDifference(r{j}.L-r{j}.Ladj,r{i}.L-r{i}.Ladj);
                         newAdj = [newAdj; shiftAmount];  
+                        catch
+                        end
                     end
                 end
                 if mean(newAdj) > 0
@@ -66,7 +69,7 @@ tic
             pause(0.1)
             lastMovement = [movement lastMovement];
             lastMovement = lastMovement(1:3);
-            if abs(mean(lastMovement) - lastMovementMean) < .1
+            if abs(mean(lastMovement) - lastMovementMean) < 1
                 break
             end
             disp(sprintf('%2.0f %2.0f\n',mean(lastMovement),abs(mean(lastMovement) - lastMovementMean)))
