@@ -1,4 +1,4 @@
-function [pks,locs] = getPeaksLC(xbaseline,Fbaseline,toPlot)
+function [pks,locs,allLcs] = getPeaksLC(xbaseline,Fbaseline,toPlot)
 % Gets peaks using the SEGM method
 % [pks,locs] = getPeaksSEGM(xbaseline,Fbaseline,toPlot)
     if nargin < 3
