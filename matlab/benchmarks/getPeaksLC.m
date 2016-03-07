@@ -18,7 +18,7 @@ y = Fbaseline;
 
 allLcs = [];
 for di=1:length(y)
-    if y(di) > 10
+    if y(di) > 15
         try
             LC0 = getLc2(0.4,x(di),y(di));
             allLcs = [allLcs; LC0];
