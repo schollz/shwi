@@ -14,13 +14,14 @@ params.Persistence = 0.4;
 
 fsMain = 'D:\Marszalek Lab\Force Curves\AllYeastPGK\';
 
-fs = {'yPGKCCdumped'}
+fs = {'YeastPGK'}
 
 for jasldf=1:length(fs)
     filelist1 = getAllFiles([fsMain fs{jasldf}]);
     for num=1:length(filelist1)
-        if ~isempty(findstr(filelist1{num},'.mat'))==1 
+        if ~isempty(findstr(filelist1{num},'manuallyDeterminedPeaks.mat'))==1 
             load(filelist1{num})
+            disp(filelist1{num})
             for m=1:length(experiment.recording)
                 i = i + 1;
                 try
@@ -50,7 +51,7 @@ r=originalR;
 [r distMatrix] = calculatingMatrix2(r);
 
 figure(10)
-numClusters = 7;
+numClusters = 2;
 Z = linkage(distMatrix,'ward','euclidean');
 close all; figure;
 subplot(1,2,2)
