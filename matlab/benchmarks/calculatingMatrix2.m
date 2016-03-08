@@ -32,7 +32,7 @@ function [r,distMatrix] = calculatingMatrix2(r)
                 error = 0;
                 numMatched = 0;
                 for k=1:length(aMatched)
-                    if aMatched(k) > 0 && alc(k) > 0 && blc(aMatched(k)) > 0 && alc(k) < 100 && blc(aMatched(k)) < 100
+                    if aMatched(k) > 0 && alc(k) > 0 && blc(aMatched(k)) > 0 %&& alc(k) < 100 && blc(aMatched(k)) < 100
 %                         disp(sprintf('%2.1f (%2.1f) %2.1f (%2.1f)',r{i}.L(k),aDlc(k),r{j}.L(aMatched(k)),bDlc(aMatched(k))))
                         error = error + sqrt((alc(k)-blc(aMatched(k)))^2);
                         numMatched = numMatched + 1;

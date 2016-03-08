@@ -47,7 +47,7 @@ end
 originalR = r;
 
 r=originalR;
-[r distMatrix] = calculatingMatrix(r);
+[r distMatrix] = calculatingMatrix2(r);
 
 figure(10)
 numClusters = 7;
@@ -60,7 +60,7 @@ cidx = cluster(Z,'MaxClust',numClusters);
 cidx = T;
 group = cidx;
 subplot(1,2,1)
-[r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,10,group);
+[r,minR,meanDifferenceSDmean] = iterativeAlignment22(r,cidx,perm,10,group);
 disp(numClusters)
 newCriterion = log(mean(meanDifferenceSDmean)) + log(numClusters);
 ylabel('Record Number')
