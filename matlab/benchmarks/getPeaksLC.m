@@ -18,7 +18,7 @@ y = Fbaseline;
 
 allLcs = [];
 for di=1:length(y)
-    if y(di) > 15
+    if y(di) > 10
         try
             LC0 = getLc2(0.4,x(di),y(di));
             allLcs = [allLcs; LC0];
@@ -27,7 +27,7 @@ for di=1:length(y)
     end
 end
 [f,xi]=ksdensity(allLcs,linspace(0,max(x)*1.5,length(x)),'bandwidth',4);
-[PKS,LOCS] = findpeaks(f,xi,'MinPeakProminence',0.0005,'MinPeakHeight',4e-3,'MinPeakDistance',10);
+[PKS,LOCS] = findpeaks(f,xi,'MinPeakProminence',0.001,'MinPeakHeight',1e-3,'MinPeakDistance',10);
 L = unique(LOCS);
 F = PKS;
 

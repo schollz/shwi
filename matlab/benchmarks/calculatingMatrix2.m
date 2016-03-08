@@ -27,12 +27,14 @@ function [r,distMatrix] = calculatingMatrix2(r)
                 aMatched = r{i}.bestMatch{j};
                 aDlc = [reshape(diff(r{i}.L),length(r{i}.L)-1,1); 0];
                 bDlc = [reshape(diff(r{j}.L),length(r{j}.L)-1,1); 0];
+                alc = [reshape((r{i}.L),length(r{i}.L),1);];
+                blc = [reshape((r{j}.L),length(r{j}.L),1);];
                 error = 0;
                 numMatched = 0;
                 for k=1:length(aMatched)
-                    if aMatched(k) > 0 && aDlc(k) > 0 && bDlc(aMatched(k)) > 0 && aDlc(k) < 100 && bDlc(aMatched(k)) < 100
+                    if aMatched(k) > 0 && alc(k) > 0 && blc(aMatched(k)) > 0 && alc(k) < 100 && blc(aMatched(k)) < 100
 %                         disp(sprintf('%2.1f (%2.1f) %2.1f (%2.1f)',r{i}.L(k),aDlc(k),r{j}.L(aMatched(k)),bDlc(aMatched(k))))
-                        error = error + sqrt((aDlc(k)-bDlc(aMatched(k)))^2);
+                        error = error + sqrt((alc(k)-blc(aMatched(k)))^2);
                         numMatched = numMatched + 1;
                     end
                 end

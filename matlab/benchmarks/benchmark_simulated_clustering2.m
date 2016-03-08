@@ -32,7 +32,7 @@ for i=1:10
     r{i}.realL = rlocs;
     r{i}.realF = rpeaks;
     
-    [pks,locs]=getPeaksSEGM(r{i}.x,r{i}.y,0);
+    [pks,locs]=getPeaksLC(r{i}.x,r{i}.y,0);
     r{i}.xPeaks = locs;
     r{i}.F = pks;
     r{i}.L=[];
@@ -124,7 +124,7 @@ end
 %     pause(0.1)
 %     plot(r{i}.x,r{i}.y,rlocs,rpeaks,'x',locs,pks,'o')
 % end
-% originalR = r;
+originalR = r;
 
 
 r=originalR;

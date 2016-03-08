@@ -15,25 +15,25 @@ r = collectMats(folder,0);
 
 % Simulate contour length increments
 % clear r
-% trueCidx = []
-% for i=1:20
-%     r{i}.L = [ 10 + 4.*randn(1,1) 40 + 4.*randn(1,1) 100 + 4.*randn(1,1)]
-%     trueCidx(i) = 1;
-% end
-% for i=20:40
-%     r{i}.L = [ 10 + 4.*randn(1,1) 40 + 4.*randn(1,1) 100 + 4.*randn(1,1)]
-%     trueCidx(i) = 1;
-% end
-% for i=40:60
-%     r{i}.L = [ 10 + 4.*randn(1,1) 40 + 4.*randn(1,1) 60 + 4.*randn(1,1) 100 + 4.*randn(1,1)]
-%     trueCidx(i) = 3;
-% end
-% for i=60:70
-%     r{i}.L = [ 10 + 7.*randn(1,1)  30 + 7.*randn(1,1) 170 + 7.*randn(1,1)]
-% end
+trueCidx = []
+for i=1:20
+    r{i}.L = [ 10 + 4.*randn(1,1) 40 + 4.*randn(1,1) 100 + 4.*randn(1,1)]
+    trueCidx(i) = 1;
+end
+for i=20:40
+    r{i}.L = [ 10 + 4.*randn(1,1) 40 + 4.*randn(1,1) 100 + 4.*randn(1,1)]
+    trueCidx(i) = 1;
+end
+for i=40:60
+    r{i}.L = [ 10 + 4.*randn(1,1) 40 + 4.*randn(1,1) 60 + 4.*randn(1,1) 100 + 4.*randn(1,1)]
+    trueCidx(i) = 3;
+end
+for i=60:70
+    r{i}.L = [ 10 + 7.*randn(1,1)  30 + 7.*randn(1,1) 170 + 7.*randn(1,1)]
+end
 
 %% Calculate distance matrix
-[r distMatrix] = calculatingMatrix(r);
+[r distMatrix] = calculatingMatrix2(r);
 
 %% Plot mdscaled curves
 % Y = mdscale(distMatrix,2)
@@ -84,7 +84,7 @@ for numClusters=11:1:15
     cidx = T;
     group = cidx;
     subplot(1,2,1)
-    [r,minR,meanDifferenceSDmean] = iterativeAlignment(r,cidx,perm,30,group);
+    [r,minR,meanDifferenceSDmean] = iterativeAlignment22(r,cidx,perm,30,group);
     disp(numClusters)
     newCriterion = -2*log(1/mean(meanDifferenceSDmean)) + 2*numClusters;  %AIC criterion
     disp(newCriterion)
