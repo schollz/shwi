@@ -132,7 +132,6 @@ r=originalR;
 
 
 figure(10)
-numClusters = 5;
 Z = linkage(distMatrix,'ward','euclidean');
 close all; figure;
 subplot(1,2,2)
@@ -141,8 +140,32 @@ ylabel('Group Number')
 cidx = cluster(Z,'MaxClust',numClusters);
 cidx = T;
 group = cidx;
-subplot(1,2,1)
-[r,minR,meanDifferenceSDmean] = iterativeAlignment22(r,cidx,perm,10,group);
-% [r,minR,meanDifferenceSDmean] = iterativeAlignment22(r,ones(size(cidx)),1,10,ones(size(cidx)));
+subplot(2,1,1)
+[r,minR,meanDifferenceSDmean] = iterativeAlignment22(r,ones(size(cidx)),1,10,ones(size(cidx)));
 ylabel('Record Number')
+
+
+
+% Show densities
+subplot(2,1,2)
+maxNum = 0
+for k=1:max(cidx)
+    if sum(cidx==k) > 5
+        maxNum = maxNum + 1
+    end
+end
+num = 0
+Ldist = [];
+for i=1:length(r)
+    for j=1:length(r{i}.L)
+        Ldistcalc = (r{i}.L(j) + r{i}.Ladj)-minR+10;
+        Ldist = [Ldist; Ldistcalc];
+    end
+end
+[f,xi]=ksdensity(Ldist,0:1:max(Ldist),'bandwidth',4);
+f = f/max(f)
+num = num + 1;
+plot(xi,f)
+axis([0 max(Ldist) 0 max(f)*1.2])
 xlabel('Contour length')
+
