@@ -48,7 +48,7 @@ end
 originalR = r;
 
 r=originalR;
-[r distMatrix] = calculatingMatrix2(r);
+[r distMatrix] = calculatingMatrix3(r);
 
 figure(10)
 numClusters = 2;
